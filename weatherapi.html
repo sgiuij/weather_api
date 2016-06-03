@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+	<title>WeatherAPI</title>
+	<meta charset="utf-8"/>
+
+	<style type="text/css">
+		#container{
+			padding: 2em;
+			font-family:"Comic Sans MS", cursive, sans-serif
+		}
+		#sidebar{
+			width: 10em;
+			display: inline-block;
+			vertical-align: top;
+			margin-right: 5em;
+			height: 80em;
+		}
+		div.weatherbox{
+			border: 0.1em solid gray;
+			border-radius: 0.8em;
+			width: 17em;
+			height: 10em; 
+			display: inline-block;
+			color: white;
+			background-color: gray;
+			padding: 0.7em;
+			margin-right: 1em;
+			margin-bottom: 1em;
+			
+		}
+		#WeatherInfo{
+			display: inline-block;
+			vertical-align: top;
+			height: 30em;
+			width: 78%;
+		}
+		#sidebar button{
+			background-color: #00ff00;
+			border: none;
+			color: white;
+			font-weight: bold;
+			height: 2em;
+			width: 6em;
+			border: none !important;
+
+		}
+		div.weatherbox button{
+			text-align: center;
+			width: 2em;
+			height: 2em;
+			background:black;
+			color: white;
+			font-weight:bold;
+			border: none !important;
+			font-size: 1.2em;
+			padding: 0em;
+			margin-left: 54%;
+
+		}
+		h3{
+			margin: 0em;
+			color: orange;
+		}
+	</style>
+	<script type="text/javascript" src="/Users/Giuij/Documents/codingdojo/jquery.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('div.weatherbox').hide();
+			var date = new Date();
+			$('#SelectCity button').click(function(){
+				var selected = $('#SelectCity select').val();
+				//console.log(selected.val());
+				//not sure what event to pass in
+				$.get("http://api.openweathermap.org/data/2.5/weather?q="+selected+"&APPID=3c8a4f3e702b53794d3aa97f89362185",function(returned_data){
+				$("#WeatherInfo").append("<div class='weatherbox'>"+"<h3>"+returned_data.name+"<button class='delete'>X</button>"+"</h3>"+"Temperature  "+returned_data.main.temp+"<br>Condition  "+returned_data.weather[0].description+"<br>Wind Speed  "+returned_data.wind.speed+' MPH'+"<br>"+date+"</div>");
+					// $('div.weatherbox').append('<div.Temperature>'+returned_data.main.temp);
+					console.log(returned_data);
+				}
+				,"json")
+			});
+			
+			$('#inputcity button').click(function(ef){
+				var inputedcity = $('#citytext input').val();
+				var inputedstate = $('#statetext input').val();				//not sure what event to pass in
+				$('#selectop').append("<option>"+inputedcity+"</option>");
+				$.get("http://api.openweathermap.org/data/2.5/weather?q="+inputedcity+","+inputedstate+"&APPID=3c8a4f3e702b53794d3aa97f89362185",function(returned_data){
+				$("#WeatherInfo").append("<br>"+returned_data.name+"<br>Temperature  "+returned_data.main.temp+"<br>Condition  "+returned_data.weather[0].description+"<br>Wind Speed  "+returned_data.wind.speed+' MPH'+"<br>"+date);
+					// $('div.weatherbox').append('<div.Temperature>'+returned_data.main.temp);
+					console.log(returned_data);
+				}
+				,"json")
+			});
+			
+		});
+
+		$(document).on("click","div.weatherbox button",function(){
+			$(this).parent().parent().hide();
+			return false;
+			console.log("working");
+		});
+	</script>
+
+</head>
+<body>
+	<div id="container">
+		<div id="sidebar">
+			
+			<div id = "SelectCity">
+				<select id="selectop">
+					<option id="Seattle">Seattle</option>
+					<option id="Denver">Denver</option>
+					<option id="Provo">Provo</option>
+				</select>
+				<button>Submit</button>
+			</div>	
+			<div id="inputcity">
+				<label id="citytext">City
+					<input type ="text">
+				</label>
+				<label id="statetext"><br>State
+					<input type ="text">
+				</label>
+				<br><button>Submit</button>
+			</div>
+
+		</div>
+		<div id="WeatherInfo">
+			<div class="weatherbox">	
+				<button class="delete">X
+				</button>
+			</div>
+		</div>
+	
+	</div>
+
+</body>
+</html>
